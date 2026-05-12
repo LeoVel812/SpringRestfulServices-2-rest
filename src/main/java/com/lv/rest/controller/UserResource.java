@@ -1,6 +1,7 @@
 package com.lv.rest.controller;
 
 import com.lv.rest.bean.User;
+import com.lv.rest.exception.UserNotFoundException;
 import com.lv.rest.service.UserDaoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserResource {
@@ -24,7 +26,8 @@ public class UserResource {
 
     @GetMapping("/users/{id}")
     public User retrieveUser(@PathVariable int id) {
-        return service.findById(id);
+        return Optional.ofNullable(service.findById(id))
+                .orElseThrow(() -> new UserNotFoundException("User not found with id-" + id));
     }
 
     @PostMapping("/users")
