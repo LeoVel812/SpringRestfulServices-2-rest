@@ -36,6 +36,10 @@ public class UserDaoService {
         return user;
     }
 
+    public boolean deleteById(int id) {
+        return users.removeIf(u -> u.getId().equals(id));
+    }
+
     private void safeIncrement() {
         synchronized (UserDaoService.class) {
             currentUserCount++;
