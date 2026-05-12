@@ -3,3 +3,5 @@ and run it, go to swagger-ui.html and export
 
 When adding xml output converter aka jackson-dataformat-xml
 comment the API def generator and add a header Accept:application/xml
+
+To use different locales, add header Accept-Language:nl
