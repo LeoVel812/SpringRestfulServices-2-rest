@@ -27,7 +27,7 @@ public class UserResource {
     @GetMapping("/users/{id}")
     public User retrieveUser(@PathVariable int id) {
         return Optional.ofNullable(service.findById(id))
-                .orElseThrow(() -> new UserNotFoundException("User not found with id-" + id));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
     }
 
     @PostMapping("/users")
