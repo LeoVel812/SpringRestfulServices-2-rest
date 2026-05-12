@@ -16,6 +16,7 @@ public class UserDaoService {
             new User(4, "LeoV", LocalDate.now().minusYears(25)),
             new User(5, "LeoXXX", LocalDate.now().minusYears(30))
     ));
+    private static Integer currentUserCount = users.size();
 
     public List<User> findAll() {
         return users;
@@ -26,5 +27,18 @@ public class UserDaoService {
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public User save(User user) {
+        safeIncrement();
+        user.setId(currentUserCount);
+        users.add(user);
+        return user;
+    }
+
+    private void safeIncrement() {
+        synchronized (UserDaoService.class) {
+            currentUserCount++;
+        }
     }
 }
