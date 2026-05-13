@@ -29,4 +29,5 @@ public class VersioningPersonSpringbootImplController {
         return new PersonV2(new Name(NAME, LASTNAME_V2));
     }
 
+    //For request header, it's only needed to add the new property in application.properties
 }
