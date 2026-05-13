@@ -1,13 +1,20 @@
 package com.lv.rest.controller;
 
+import com.lv.rest.bean.Post;
 import com.lv.rest.bean.User;
 import com.lv.rest.exception.UserNotFoundException;
+import com.lv.rest.repository.PostRepository;
 import com.lv.rest.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -18,21 +25,22 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserJpaResource {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserJpaResource(UserRepository repository) {
-        this.repository = repository;
+    public UserJpaResource(UserRepository userRepository, PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     @GetMapping("/jpa/users")
     public List<User> retrieveAllUsers() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @GetMapping("/jpa/users/{id}")
     public EntityModel<User> retrieveUser(@PathVariable int id) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
+        User user = getUserFromRepo(id);
 
         EntityModel<User> entityModel = EntityModel.of(user);
         WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
@@ -42,10 +50,9 @@ public class UserJpaResource {
 
     @PostMapping("/jpa/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User savedUser = repository.save(user);
+        User savedUser = userRepository.save(user);
 //        URI location = URI.create(String.format("/users/%s", user.getId()));
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
@@ -54,11 +61,34 @@ public class UserJpaResource {
 
     @DeleteMapping("/jpa/users/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable int id) {
-        User user = repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
-        repository.deleteById(user.getId());
+        User user = getUserFromRepo(id);
+        userRepository.deleteById(user.getId());
         return ResponseEntity.ok().build();
 
+    }
+
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> retrievePostsForUser(@PathVariable int id) {
+        User user = getUserFromRepo(id);
+        return user.getPosts();
+    }
+
+    @PostMapping("/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createPostForUser(@PathVariable int id, @Valid @RequestBody Post post) {
+        User user = getUserFromRepo(id);
+        post.setUser(user);
+        Post savedPost = postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    private User getUserFromRepo(int id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
     }
 
 }
