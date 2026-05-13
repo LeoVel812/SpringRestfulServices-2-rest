@@ -3,7 +3,7 @@ package com.lv.rest.versioning;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+//@RestController
 public class VersioningPersonSpringbootImplController {
     private static final String NAME = "LeonV";
     private static final String NAME_V1 = "LeonV First";
