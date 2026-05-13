@@ -30,4 +30,5 @@ public class VersioningPersonSpringbootImplController {
     }
 
     //For request header, it's only needed to add the new property in application.properties
+    //For accept header, it's only needed to add the new property in application.properties
 }
