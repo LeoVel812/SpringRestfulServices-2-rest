@@ -24,4 +24,14 @@ public class VersioningPersonController {
     public PersonV2 getSecondVersionOfPersonRequestParam() {
         return new PersonV2(new Name("LeonV", "Second"));
     }
+
+    @GetMapping(path = "/person", headers = "X-API-VERSION=1")
+    public PersonV1 getFirstVersionOfPersonRequestHeader() {
+        return new PersonV1("LeonV First");
+    }
+
+    @GetMapping(path = "/person", headers = "X-API-VERSION=2")
+    public PersonV2 getSecondVersionOfPersonRequestHeader() {
+        return new PersonV2(new Name("LeonV", "Second"));
+    }
 }
