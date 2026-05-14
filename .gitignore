@@ -1,33 +1,23 @@
-HELP.md
+# Build folders
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+!.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+# IDE Specific
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
+.settings/
+.classpath
+.project
+.factorypath
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# OS Specific
+Thumbs.db
+.DS_Store
 
-### VS Code ###
-.vscode/
+# Sensitive local config
+*.log
+.env
+application-local.properties
